@@ -98,10 +98,7 @@ function Logo() {
   const theme = useTheme();
 
   return (
-    <TooltipWrapper
-      title="Tokyo Free White React Typescript Admin Dashboard"
-      arrow
-    >
+    <TooltipWrapper title="ETS React TS Starter" arrow>
       <LogoWrapper to="/overview">
         <Badge
           sx={{

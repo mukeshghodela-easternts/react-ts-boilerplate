@@ -418,6 +418,17 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
+                  to="/login"
+                  startIcon={<CheckBoxTwoToneIcon />}
+                >
+                  Login Page
+                </Button>
+              </ListItem>
+              <ListItem component="div">
+                <Button
+                  disableRipple
+                  component={RouterLink}
+                  onClick={closeSidebar}
                   to="/status/404"
                   startIcon={<CheckBoxTwoToneIcon />}
                 >

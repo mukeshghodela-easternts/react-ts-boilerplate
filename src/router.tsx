@@ -71,6 +71,7 @@ const StatusComingSoon = Loader(
 const StatusMaintenance = Loader(
   lazy(() => import('./content/pages/Status/Maintenance'))
 );
+const Login = Loader(lazy(() => import('./content/pages/Components/Login')));
 
 const routes: RouteObject[] = [
   {
@@ -84,6 +85,10 @@ const routes: RouteObject[] = [
       {
         path: 'overview',
         element: <Navigate to="/" replace />
+      },
+      {
+        path: 'login',
+        element: <Login to="/login" replace />
       },
       {
         path: 'status',
