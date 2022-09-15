@@ -1,8 +1,8 @@
-import { Button, Container, Grid, Typography } from '@mui/material';
+import { Button, Container, Grid, Typography, Box } from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { styled } from '@mui/material/styles';
 import { Formik, FormikHelpers, FormikProps, Form, Field } from 'formik';
 import { MUITextField } from '../../../../../components/MUITextField';
-import * as yup from 'yup';
 import {
   merge,
   requiredEmailSchema,
@@ -11,7 +11,27 @@ import {
 
 const TypographyH1 = styled(Typography)(
   ({ theme }) => `
-    font-size: ${theme.typography.pxToRem(40)};
+    font-size: ${theme.typography.pxToRem(30)};
+`
+);
+
+const MuiAvatar = styled(Box)(
+  ({ theme }) => `
+    width: ${theme.spacing(6)};
+    height: ${theme.spacing(6)};
+    border-radius: 100%;
+    background-color: ${theme.colors.success.main};
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto ${theme.spacing(2)};
+
+    img {
+      width: 60%;
+      height: 60%;
+      display: block;
+    }
 `
 );
 
@@ -36,60 +56,69 @@ const LoginForm = () => {
   };
   return (
     <Container maxWidth="lg" sx={{ textAlign: 'center' }}>
-      <Grid
-        spacing={{ xs: 6, md: 10 }}
-        justifyContent="center"
-        alignItems="center"
-        container
-      >
-        <Grid item md={10} lg={8} mx="auto">
-          <TypographyH1 sx={{ mb: 2 }} variant="h1">
-            Login
-          </TypographyH1>
-          <Formik
-            initialValues={{
-              email: '',
-              password: ''
-            }}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-          >
-            {(formikProps: FormikProps<FormValues>) => (
-              <Form noValidate autoComplete="off">
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <Field
-                      name="email"
-                      label="Email"
-                      size="small"
-                      component={MUITextField}
-                    />
+      <Grid justifyContent="center" alignItems="center" container>
+        <Box
+          sx={{
+            marginTop: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }}
+        >
+          <Grid item md={10} lg={8} mx="auto">
+            <MuiAvatar>
+              <LockOutlinedIcon />
+            </MuiAvatar>
+            <TypographyH1 sx={{ mb: 4 }} variant="h1">
+              Sign In
+            </TypographyH1>
+            <Formik
+              initialValues={{
+                email: '',
+                password: ''
+              }}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+            >
+              {(formikProps: FormikProps<FormValues>) => (
+                <Form noValidate autoComplete="off">
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <Field
+                        fullWidth
+                        name="email"
+                        label="Email"
+                        size="small"
+                        component={MUITextField}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Field
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type="password"
+                        size="small"
+                        component={MUITextField}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2 }}
+                        disabled={formikProps.isSubmitting}
+                      >
+                        SIGN IN
+                      </Button>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12}>
-                    <Field
-                      name="password"
-                      label="Password"
-                      type="password"
-                      size="small"
-                      component={MUITextField}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Button
-                      type="submit"
-                      variant="outlined"
-                      size="large"
-                      color="primary"
-                      disabled={formikProps.isSubmitting}
-                    >
-                      Submit
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Form>
-            )}
-          </Formik>
-        </Grid>
+                </Form>
+              )}
+            </Formik>
+          </Grid>
+        </Box>
       </Grid>
     </Container>
   );
