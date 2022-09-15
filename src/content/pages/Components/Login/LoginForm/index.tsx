@@ -20,7 +20,7 @@ const MuiAvatar = styled(Box)(
     width: ${theme.spacing(6)};
     height: ${theme.spacing(6)};
     border-radius: 100%;
-    background-color: ${theme.colors.success.main};
+    background-color: ${theme.colors.primary.main};
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -32,6 +32,11 @@ const MuiAvatar = styled(Box)(
       height: 60%;
       display: block;
     }
+`
+);
+const MuiLockOutlinedIcon = styled(Box)(
+  ({ theme }) => `
+    color: ${theme.colors.alpha.white[100]};
 `
 );
 
@@ -67,7 +72,7 @@ const LoginForm = () => {
         >
           <Grid item md={10} lg={8} mx="auto">
             <MuiAvatar>
-              <LockOutlinedIcon />
+              <MuiLockOutlinedIcon component={LockOutlinedIcon} />
             </MuiAvatar>
             <TypographyH1 sx={{ mb: 4 }} variant="h1">
               Sign In
