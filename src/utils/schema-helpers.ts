@@ -16,17 +16,17 @@ export const requiredStringSchema = (
   errorMessage: string
 ): yup.AnySchema => {
   return yup.object({
-    [fieldName]: yup.string().nullable().required(errorMessage),
+    [fieldName]: yup.string().nullable().required(errorMessage)
   });
 };
 
 export const requiredEmailSchema = (
-  fieldName = 'emailAddress',
+  fieldName = 'email',
   requiredMessage = 'Please enter your email address.',
   emailMessage = 'Please enter a valid email address.'
 ): yup.AnySchema => {
   return yup.object({
-    [fieldName]: yup.string().required(requiredMessage).email(emailMessage),
+    [fieldName]: yup.string().required(requiredMessage).email(emailMessage)
   });
 };
 
@@ -35,7 +35,7 @@ export const nullableEmailSchema = (
   emailMessage = 'Please enter a valid email address.'
 ): yup.AnySchema => {
   return yup.object({
-    [fieldName]: yup.string().nullable().email(emailMessage),
+    [fieldName]: yup.string().nullable().email(emailMessage)
   });
 };
 
@@ -44,7 +44,7 @@ export const requiredNumberSchema = (
   errorMessage = 'Field is required'
 ): yup.AnySchema => {
   return yup.object({
-    [fieldName]: yup.number().required(errorMessage),
+    [fieldName]: yup.number().required(errorMessage)
   });
 };
 
@@ -53,7 +53,7 @@ export const requiredNullableNumberSchema = (
   errorMessage = 'Field is required'
 ): yup.AnySchema => {
   return yup.object({
-    [fieldName]: yup.number().nullable().required(errorMessage),
+    [fieldName]: yup.number().nullable().required(errorMessage)
   });
 };
 
@@ -69,7 +69,7 @@ export const passwordSchema = (
     [confirmPasswordField]: yup
       .string()
       .required(confirmPasswordErrorMessage)
-      .oneOf([yup.ref(passwordField), null], matchPasswordErrorMessage),
+      .oneOf([yup.ref(passwordField), null], matchPasswordErrorMessage)
   });
 };
 
@@ -78,7 +78,7 @@ export const stringArrayRequiredSchema = (
   errorMessage = 'Field is required'
 ): yup.AnySchema => {
   return yup.object({
-    [fieldName]: yup.array().min(1, errorMessage),
+    [fieldName]: yup.array().min(1, errorMessage)
   });
 };
 
@@ -93,7 +93,7 @@ export const phoneNumberSchema = (
       .number()
       .typeError(typeError)
       .test('len', minMessage, (val) => String(val).length >= 10)
-      .required(errorMessage),
+      .required(errorMessage)
   });
 };
 
@@ -104,7 +104,7 @@ export const maxLengthSchema = (
 ): yup.AnySchema => {
   return yup.object({
     //[fieldName]: yup.string().length(length).typeError(errorMessage)
-    [fieldName]: yup.string().max(length).typeError(errorMessage),
+    [fieldName]: yup.string().max(length).typeError(errorMessage)
   });
 };
 
@@ -116,6 +116,6 @@ export const customTest = (
   return yup.object({
     [fieldName]: yup
       .string()
-      .test('isValid', errorMessage, (value) => value == testValue),
+      .test('isValid', errorMessage, (value) => value == testValue)
   });
 };

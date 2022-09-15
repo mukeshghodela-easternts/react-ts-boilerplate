@@ -1,8 +1,13 @@
-import { Box, Button, Container, Grid, Typography } from '@mui/material';
+import { Button, Container, Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Formik, FormikHelpers, FormikProps, Form, Field } from 'formik';
 import { MUITextField } from '../../../../../components/MUITextField';
 import * as yup from 'yup';
+import {
+  merge,
+  requiredEmailSchema,
+  requiredStringSchema
+} from '../../../../../utils/schema-helpers';
 
 const TypographyH1 = styled(Typography)(
   ({ theme }) => `
@@ -15,13 +20,20 @@ interface FormValues {
   password: string;
 }
 
-const validationSchema = yup.object().shape({
-  name: yup.string().required('Required'),
-  description: yup.string().required('Required')
-});
+const validationSchema = merge(
+  requiredStringSchema('password', 'Please enter your password'),
+  requiredEmailSchema()
+);
 
 // Ref Link : https://codesandbox.io/s/formik-v2-tutorial-final-ge1pt?file=/src/index.js
-function LoginForm() {
+const LoginForm = () => {
+  const handleSubmit = (
+    values: FormValues,
+    formikHelpers: FormikHelpers<FormValues>
+  ) => {
+    alert(JSON.stringify(values, null, 2));
+    formikHelpers.setSubmitting(false);
+  };
   return (
     <Container maxWidth="lg" sx={{ textAlign: 'center' }}>
       <Grid
@@ -40,13 +52,7 @@ function LoginForm() {
               password: ''
             }}
             validationSchema={validationSchema}
-            onSubmit={(
-              values: FormValues,
-              formikHelpers: FormikHelpers<FormValues>
-            ) => {
-              alert(JSON.stringify(values, null, 2));
-              formikHelpers.setSubmitting(false);
-            }}
+            onSubmit={handleSubmit}
           >
             {(formikProps: FormikProps<FormValues>) => (
               <Form noValidate autoComplete="off">
@@ -87,6 +93,6 @@ function LoginForm() {
       </Grid>
     </Container>
   );
-}
+};
 
 export default LoginForm;
