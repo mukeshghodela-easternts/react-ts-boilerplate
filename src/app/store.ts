@@ -2,9 +2,7 @@ import {
   configureStore,
   ThunkAction,
   Action,
-  combineReducers
 } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
 import storage from 'redux-persist/lib/storage';
 import {
   persistStore,
@@ -16,10 +14,8 @@ import {
   PURGE,
   REGISTER
 } from 'redux-persist';
+import rootReducer from './rootReducer';
 
-const rootReducer = combineReducers({
-  counter: counterReducer
-});
 
 const persistConfig = {
   key: 'react-ets-ts-boilerplate',

@@ -11,12 +11,12 @@ import {
   useTheme,
   Button,
   lighten,
-  darken,
-  Tooltip
+  darken
 } from '@mui/material';
 
 import SidebarMenu from './SidebarMenu';
 import Logo from '../../../components/LogoSign';
+import { useNavigate } from 'react-router-dom';
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
@@ -34,6 +34,12 @@ function Sidebar() {
   const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
   const closeSidebar = () => toggleSidebar();
   const theme = useTheme();
+  const navigate = useNavigate();
+
+  const logout = () => {
+    localStorage.clear();
+    navigate('/login');
+  };
 
   return (
     <>
@@ -81,15 +87,13 @@ function Sidebar() {
         />
         <Box p={2}>
           <Button
-            href="https://bloomui.com"
-            target="_blank"
-            rel="noopener noreferrer"
             variant="contained"
             color="warning"
             size="small"
             fullWidth
+            onClick={logout}
           >
-            Upgrade to PRO
+            Logout
           </Button>
         </Box>
       </SidebarWrapper>
