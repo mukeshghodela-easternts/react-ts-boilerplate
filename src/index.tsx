@@ -11,9 +11,11 @@ import { BrowserRouter } from 'react-router-dom';
 import { SidebarProvider } from './contexts/SidebarContext';
 import 'nprogress/nprogress.css';
 import { PersistGate } from 'redux-persist/integration/react';
+import AxiosInterceptors from './interceptors';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
+AxiosInterceptors.setup(store);
 
 root.render(
   <React.StrictMode>

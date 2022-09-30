@@ -15,7 +15,7 @@ https://github.com/reduxjs/redux-toolkit/releases/tag/v1.3.0-alpha.5
 */
 
 export type LoginFormData = {
-  username: string;
+  email: string;
   password: string;
 };
 
@@ -25,10 +25,13 @@ export const userLoginThunk = createAsyncThunk(
     // Note: you should try catch here and use `rejectWithValue` if you have errors
     const {
       data: { user, token }
-    } = await axios.post<UserState>('/api/profiles/auth/login', {
-      username: logindata.username,
-      password: logindata.password
-    });
+    } = await axios.post<UserState>(
+      `${process.env.REACT_APP_API_URL}/subscriber-login`,
+      {
+        email: logindata.email,
+        password: logindata.password
+      }
+    );
     localStorage.setItem('token', token);
     return { user, token };
   }

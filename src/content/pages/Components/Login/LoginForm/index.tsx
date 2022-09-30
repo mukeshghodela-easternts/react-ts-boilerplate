@@ -8,6 +8,13 @@ import {
   requiredEmailSchema,
   requiredStringSchema
 } from '../../../../../utils/schema-helpers';
+import { useCallback } from 'react';
+import { useAppDispatch } from '../../../../../app/store'; //RootState
+// import { userActions } from '../../../../../features/users/usersSlice';
+import {
+  LoginFormData,
+  userActions
+} from '../../../../../features/user/usersSlice';
 
 const TypographyH1 = styled(Typography)(
   ({ theme }) => `
@@ -52,11 +59,29 @@ const validationSchema = merge(
 
 // Ref Link : https://codesandbox.io/s/formik-v2-tutorial-final-ge1pt?file=/src/index.js
 const LoginForm = () => {
+  const dispatch = useAppDispatch();
+  const handleLogin = useCallback(
+    (values: LoginFormData, formikHelpers: FormikHelpers<FormValues>) =>
+      dispatch(
+        userActions.userLoginThunk({
+          email: values.email,
+          password: values.password
+        })
+      ).then((action) => {
+        if (userActions.userLoginThunk.rejected.match(action)) {
+          formikHelpers.setFieldError('email', 'Wrong email or password');
+          formikHelpers.setFieldError('password', 'Wrong email or password');
+        } else {
+          // onLoginSuccess();
+        }
+      }),
+    [dispatch]
+  );
   const handleSubmit = (
     values: FormValues,
     formikHelpers: FormikHelpers<FormValues>
   ) => {
-    alert(JSON.stringify(values, null, 2));
+    handleLogin(values, formikHelpers);
     formikHelpers.setSubmitting(false);
   };
   return (
