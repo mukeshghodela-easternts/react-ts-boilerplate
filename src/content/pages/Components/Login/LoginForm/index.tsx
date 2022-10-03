@@ -1,4 +1,5 @@
-import { Button, Container, Grid, Typography, Box } from '@mui/material';
+import { Container, Grid, Typography, Box } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { styled } from '@mui/material/styles';
 import { Formik, FormikHelpers, FormikProps, Form, Field } from 'formik';
@@ -73,6 +74,7 @@ const LoginForm = () => {
           formikHelpers.setFieldError('password', 'Wrong email or password');
         } else {
           // onLoginSuccess();
+          formikHelpers.setSubmitting(false);
         }
       }),
     [dispatch]
@@ -82,7 +84,6 @@ const LoginForm = () => {
     formikHelpers: FormikHelpers<FormValues>
   ) => {
     handleLogin(values, formikHelpers);
-    formikHelpers.setSubmitting(false);
   };
   return (
     <Container maxWidth="lg" sx={{ textAlign: 'center' }}>
@@ -133,7 +134,8 @@ const LoginForm = () => {
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      <Button
+                      <LoadingButton
+                        loading={formikProps.isSubmitting}
                         type="submit"
                         fullWidth
                         variant="contained"
@@ -141,7 +143,7 @@ const LoginForm = () => {
                         disabled={formikProps.isSubmitting}
                       >
                         SIGN IN
-                      </Button>
+                      </LoadingButton>
                     </Grid>
                   </Grid>
                 </Form>
