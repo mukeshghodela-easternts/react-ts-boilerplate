@@ -16,6 +16,8 @@ import {
   LoginFormData,
   userActions
 } from '../../../../../features/user/usersSlice';
+import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from '../../../../../contexts/SnackbarContext';
 
 const TypographyH1 = styled(Typography)(
   ({ theme }) => `
@@ -61,6 +63,8 @@ const validationSchema = merge(
 // Ref Link : https://codesandbox.io/s/formik-v2-tutorial-final-ge1pt?file=/src/index.js
 const LoginForm = () => {
   const dispatch = useAppDispatch();
+  const { setSnackbar } = useSnackbar();
+  const navigate = useNavigate();
   const handleLogin = useCallback(
     (values: LoginFormData, formikHelpers: FormikHelpers<FormValues>) =>
       dispatch(
@@ -74,7 +78,13 @@ const LoginForm = () => {
           formikHelpers.setFieldError('password', 'Wrong email or password');
         } else {
           // onLoginSuccess();
+          setSnackbar({
+            show: true,
+            message: 'Logged in successfully.',
+            color: 'success'
+          });
           formikHelpers.setSubmitting(false);
+          // navigate('/dashboards/crypto');
         }
       }),
     [dispatch]

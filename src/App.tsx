@@ -6,6 +6,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
 import { CssBaseline } from '@mui/material';
 import ThemeProvider from './theme/ThemeProvider';
+import { SnackbarProvider } from './contexts/SnackbarContext';
 
 function App() {
   const content = useRoutes(router());
@@ -13,8 +14,10 @@ function App() {
   return (
     <ThemeProvider>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <CssBaseline />
-        {content}
+        <SnackbarProvider>
+          <CssBaseline />
+          {content}
+        </SnackbarProvider>
       </LocalizationProvider>
     </ThemeProvider>
   );
