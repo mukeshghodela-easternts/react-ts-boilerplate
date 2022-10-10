@@ -10,17 +10,18 @@ import {
   requiredStringSchema
 } from '../../../../../utils/schema-helpers';
 import { useCallback } from 'react';
-import { useAppDispatch } from '../../../../../app/store'; //RootState
-// import { userActions } from '../../../../../features/users/usersSlice';
+import { useAppDispatch } from '../../../../../app/store';
 import {
   LoginFormData,
   userActions
 } from '../../../../../features/user/usersSlice';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from '../../../../../contexts/SnackbarContext';
+import useErrors from '../../../../../utils/hooks/use-errors';
+import { AxiosResponse } from 'axios';
 
 const TypographyH1 = styled(Typography)(
-  ({ theme }) => `
+  ({ theme }) => `'lolllllkkkkkkkibfgrffrffrfgtdcfrfgdfdfdeASZA3zsw3wzw3
     font-size: ${theme.typography.pxToRem(30)};
 `
 );
@@ -65,6 +66,7 @@ const LoginForm = () => {
   const dispatch = useAppDispatch();
   const { setSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const { getServerErrors } = useErrors();
   const handleLogin = useCallback(
     (values: LoginFormData, formikHelpers: FormikHelpers<FormValues>) =>
       dispatch(
@@ -74,8 +76,14 @@ const LoginForm = () => {
         })
       ).then((action) => {
         if (userActions.userLoginThunk.rejected.match(action)) {
-          formikHelpers.setFieldError('email', 'Wrong email or password');
-          formikHelpers.setFieldError('password', 'Wrong email or password');
+          // formikHelpers.setFieldError('email', action.error.message);
+          // formikHelpers.setFieldError('password', action.error.message);
+          setSnackbar({
+            show: true,
+            message: getServerErrors(action.payload as AxiosResponse).errors,
+            color: 'error'
+          });
+          formikHelpers.setSubmitting(false);
         } else {
           // onLoginSuccess();
           setSnackbar({

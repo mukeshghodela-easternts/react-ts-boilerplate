@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { RootState } from '../../app/store';
-
 /*
 const make_url = (endpoint: string): string => {
   return `${process.env.REACT_APP_PROTOCOL}://${process.env.REACT_APP_BACKEND_HOST}${endpoint}`;
@@ -22,15 +21,22 @@ export type LoginFormData = {
 export const userLoginThunk = createAsyncThunk(
   'users/login',
   async (logindata: LoginFormData, { rejectWithValue }) => {
-    // Note: you should try catch here and use `rejectWithValue` if you have errors
-    const data = await axios.post<{ data: UserState }>(
-      `${process.env.REACT_APP_API_URL}/login`,
-      {
-        email: logindata.email,
-        password: logindata.password
+    try {
+      const data = await axios.post<{ data: UserState }>(
+        `${process.env.REACT_APP_API_URL}/login`,
+        {
+          email: logindata.email,
+          password: logindata.password
+        }
+      );
+      return data.data;
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
       }
-    );
-    return data.data;
+
+      return rejectWithValue(err.response);
+    }
   }
 );
 
