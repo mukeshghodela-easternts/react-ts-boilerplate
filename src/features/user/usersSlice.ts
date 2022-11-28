@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { AnyObject } from 'yup/lib/types';
 import { RootState } from '../../app/store';
+import { IPagination } from '../../common';
+import { getSortType } from '../../utils/helper';
 /*
 const make_url = (endpoint: string): string => {
   return `${process.env.REACT_APP_PROTOCOL}://${process.env.REACT_APP_BACKEND_HOST}${endpoint}`;
@@ -27,6 +30,45 @@ export const userLoginThunk = createAsyncThunk(
         {
           email: logindata.email,
           password: logindata.password
+        }
+      );
+      return data.data;
+    } catch (err: any) {
+      if (!err.response) {
+        throw err;
+      }
+
+      return rejectWithValue(err.response);
+    }
+  }
+);
+
+export const planListThunk = createAsyncThunk(
+  'users/planList',
+  async (
+    param: {
+      pagination: IPagination;
+      additionalParams?: { [index: string]: string | boolean };
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const data = await axios.get<AnyObject>(
+        `${process.env.REACT_APP_API_URL}/plans?page=${
+          param.pagination.page ? param.pagination.page : 1
+        }&per_page=${
+          param.pagination.limit ? param.pagination.limit : ''
+        }&search=${
+          param.pagination.query ? param.pagination.query : ''
+        }&filter=${
+          param.pagination.filter ? param.pagination.filter : ''
+        }&is_light=${
+          param.pagination.isLight ? param.pagination.isLight : ''
+        }&sort=${
+          param.pagination.orderBy ? param.pagination.orderBy : ''
+        }&order_by=${getSortType(param.pagination.descending)}`,
+        {
+          params: param.additionalParams ? param.additionalParams : {}
         }
       );
       return data.data;
@@ -145,7 +187,15 @@ const initialState = {
       request_status_text: ''
     }
   },
-  token: ''
+  token: '',
+  pagination: {
+    query: '',
+    page: 1,
+    limit: 10,
+    orderBy: '',
+    descending: 'default',
+    filter: ''
+  }
 };
 
 const slice = createSlice({
@@ -162,6 +212,13 @@ const slice = createSlice({
       .addCase(userLoginThunk.rejected, (state, action) => {
         return initialState;
       })
+      .addCase(planListThunk.pending, (state, action) => {})
+      .addCase(planListThunk.fulfilled, (state, { payload: { data } }) => {
+        return data;
+      })
+      .addCase(planListThunk.rejected, (state, action) => {
+        return initialState;
+      })
       .addCase(logoutUser.fulfilled, (state) => {
         return initialState;
       });
@@ -170,7 +227,7 @@ const slice = createSlice({
 
 export default slice.reducer;
 // normally you'd just export these individually so you don't have to import all userActions. can be helpful.
-export const userActions = { ...slice.actions, userLoginThunk };
+export const userActions = { ...slice.actions, userLoginThunk, planListThunk };
 
 export const selectUser = (state: RootState) => state.user;
 

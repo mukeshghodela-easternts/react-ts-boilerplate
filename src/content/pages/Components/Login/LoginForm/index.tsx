@@ -21,7 +21,7 @@ import useErrors from '../../../../../utils/hooks/use-errors';
 import { AxiosResponse } from 'axios';
 
 const TypographyH1 = styled(Typography)(
-  ({ theme }) => `'lolllllkkkkkkkibfgrffrffrfgtdcfrfgdfdfdeASZA3zsw3wzw3
+  ({ theme }) => `
     font-size: ${theme.typography.pxToRem(30)};
 `
 );
@@ -92,7 +92,7 @@ const LoginForm = () => {
             color: 'success'
           });
           formikHelpers.setSubmitting(false);
-          // navigate('/dashboards/crypto');
+          navigate('/dashboards/crypto');
         }
       }),
     [dispatch]
@@ -149,7 +149,7 @@ const LoginForm = () => {
                         type="password"
                         size="small"
                         component={MUITextField}
-                      />
+                      /> 
                     </Grid>
                     <Grid item xs={12}>
                       <LoadingButton

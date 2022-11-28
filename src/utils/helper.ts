@@ -108,11 +108,22 @@ const timeInterval = (
   };
 };
 
+function getSortType(isDescending: string | boolean | undefined): string {
+  if (isDescending == true || isDescending == 'true') {
+    return 'desc';
+  } else if (isDescending == false || isDescending == 'false') {
+    return 'asc';
+  } else {
+    return '';
+  }
+}
+
 export {
   formatNumber,
   parseJson,
   truncateText,
   titleCase,
   convertToCSV,
-  timeInterval
+  timeInterval,
+  getSortType
 };
