@@ -195,7 +195,8 @@ const initialState = {
     orderBy: '',
     descending: 'default',
     filter: ''
-  }
+  },
+  planList: []
 };
 
 const slice = createSlice({
@@ -214,7 +215,7 @@ const slice = createSlice({
       })
       .addCase(planListThunk.pending, (state, action) => {})
       .addCase(planListThunk.fulfilled, (state, { payload: { data } }) => {
-        return data;
+        state.planList = data;
       })
       .addCase(planListThunk.rejected, (state, action) => {
         return initialState;
