@@ -143,8 +143,6 @@ const UsersTable: FC<UsersTableProps> = ({ cryptoOrders }) => {
             color: 'error'
           });
         } else {
-          // debugger;
-          // setUserList(action.payload.data);
           setUserCount(action.payload.data.total);
         }
       })
