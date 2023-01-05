@@ -258,10 +258,10 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/plan/list"
+                  to="/user/list"
                   startIcon={<TableChartTwoToneIcon />}
                 >
-                  Plan List
+                  User List
                 </Button>
               </ListItem>
             </List>

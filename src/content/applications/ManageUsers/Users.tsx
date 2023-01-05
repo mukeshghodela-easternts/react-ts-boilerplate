@@ -1,6 +1,6 @@
 import { Card } from '@mui/material';
 import { CryptoOrder } from '../../../models/crypto_order';
-import PlansTable from './PlansTable';
+import UsersTable from './UsersTable';
 import { subDays } from 'date-fns';
 
 function RecentOrders() {
@@ -139,7 +139,7 @@ function RecentOrders() {
 
   return (
     <Card>
-      <PlansTable cryptoOrders={cryptoOrders} />
+      <UsersTable cryptoOrders={cryptoOrders} />
     </Card>
   );
 }

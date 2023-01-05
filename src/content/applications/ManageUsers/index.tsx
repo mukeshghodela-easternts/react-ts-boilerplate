@@ -4,13 +4,13 @@ import PageTitleWrapper from '../../../components/PageTitleWrapper';
 import { Grid, Container } from '@mui/material';
 import Footer from '../../../components/Footer';
 
-import Plans from './Plans';
+import Users from './Users';
 
 export default function () {
   return (
     <>
       <Helmet>
-        <title>Transactions - Applications</title>
+        <title>User Management</title>
       </Helmet>
       <PageTitleWrapper>
         <PageHeader />
@@ -24,7 +24,7 @@ export default function () {
           spacing={3}
         >
           <Grid item xs={12}>
-            <Plans />
+            <Users />
           </Grid>
         </Grid>
       </Container>

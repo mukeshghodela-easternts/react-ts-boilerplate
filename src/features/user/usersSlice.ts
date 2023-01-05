@@ -3,6 +3,7 @@ import axios from 'axios';
 import { AnyObject } from 'yup/lib/types';
 import { RootState } from '../../app/store';
 import { IPagination } from '../../common';
+import { ICurrentUserData, IUserFullResponse } from '../../types/user';
 import { getSortType } from '../../utils/helper';
 /*
 const make_url = (endpoint: string): string => {
@@ -25,7 +26,7 @@ export const userLoginThunk = createAsyncThunk(
   'users/login',
   async (logindata: LoginFormData, { rejectWithValue }) => {
     try {
-      const data = await axios.post<{ data: UserState }>(
+      const data = await axios.post<{ data: ICurrentUserData }>(
         `${process.env.REACT_APP_API_URL}/login`,
         {
           email: logindata.email,
@@ -43,8 +44,8 @@ export const userLoginThunk = createAsyncThunk(
   }
 );
 
-export const planListThunk = createAsyncThunk(
-  'users/planList',
+export const userListThunk = createAsyncThunk(
+  'users/userList',
   async (
     param: {
       pagination: IPagination;
@@ -54,7 +55,7 @@ export const planListThunk = createAsyncThunk(
   ) => {
     try {
       const data = await axios.get<AnyObject>(
-        `${process.env.REACT_APP_API_URL}/plans?page=${
+        `${process.env.REACT_APP_API_URL}/users?page=${
           param.pagination.page ? param.pagination.page : 1
         }&per_page=${
           param.pagination.limit ? param.pagination.limit : ''
@@ -71,7 +72,7 @@ export const planListThunk = createAsyncThunk(
           params: param.additionalParams ? param.additionalParams : {}
         }
       );
-      return data.data;
+      return data;
     } catch (err: any) {
       if (!err.response) {
         throw err;
@@ -92,100 +93,44 @@ export const logoutUser = createAsyncThunk('users/logout', async () => {
 });
 
 const initialState = {
-  user: <UserState>{
+  user: <ICurrentUserData>{
     authorization: '',
-    refresh_token: '',
-    id: '',
-    company_id: '',
-    title: '',
-    first_name: '',
-    last_name: '',
-    job_title: '',
-    user_type: '',
-    user_type_text: 'n',
+    dob: '',
     email: '',
-    is_allow_purchase_datapack: '',
-    subscriber_role_id: '',
-    subscriber_role: {
+    email_verified_at: '',
+    gender: '',
+    gender_text: '',
+    id: '',
+    name: '',
+    permissions: [],
+    profile: '',
+    profile_original: '',
+    profile_thumbnail: '',
+    role: {
+      created_at: '',
+      created_by: '',
+      deleted_at: '',
+      guard_name: '',
       id: '',
+      landing_page: '',
       name: '',
-      guard_name: ''
+      updated_at: '',
+      updated_by: ''
     },
-    profile_obj: {
-      main: '',
-      default: '',
-      mobile: '',
-      laptop: '',
-      tablet: '',
-      thumbnail: '',
-      original: ''
-    },
-    profile_name: '',
+    role_id: '',
+    sample_excels: [
+      {
+        sample_brand: '',
+        sample_color: '',
+        sample_product: '',
+        sample_supplier: '',
+        sample_user: 'string'
+      }
+    ],
     status: '',
     status_text: '',
-    email_verified_at: '',
-    last_login_time: '',
-    stripe_customer_id: '',
-    zoho_contact_id: '',
-    qb_customer_id: '',
-    no_api_permissions: [],
-    subscription_status: '',
-    subscription_status_text: '',
-    subscription: {
-      company_id: '',
-      expiry_date: '',
-      id: '',
-      name: '',
-      payment_status: '',
-      payment_status_text: '',
-      plan: {
-        id: '',
-        stripe_plan_id: '',
-        stripe_product_id: '',
-        name: '',
-        price: '',
-        concurrent_user: '',
-        total_user: '',
-        vehicle_data_library_access: '',
-        vehicle_data_library_access_text: '',
-        vehicle_data_library_discount: '',
-        no_of_complimentary_data_pack: '',
-        future_plan: '',
-        future_plan_text: '',
-        line_of_credit: '',
-        line_of_credit_text: '',
-        status: '',
-        status_text: '',
-        total_subscriptions: '',
-        qb_item_id: '',
-        pro_rate: '',
-        used_amount: '',
-        scan_data_library: '',
-        introductory_discount: '',
-        introductory_text: '',
-        feature_pdf_original: '',
-        feature_pdf: '',
-        company_plan: {
-          status: '',
-          status_text: '',
-          is_disable: ''
-        },
-        plan_details: []
-      },
-      plan_id: '',
-      self_ref_id: '',
-      start_date: '',
-      stripe_status: '',
-      stripe_customer_id: '',
-      user_id: ''
-    },
-    cancel_request_flag: {
-      is_auto_generated_invoice: false,
-      plan: { id: '', name: '', total_user: '' },
-      visibility: '',
-      request_status: '',
-      request_status_text: ''
-    }
+    user_galleries: [],
+    user_pictures: []
   },
   token: '',
   pagination: {
@@ -196,7 +141,7 @@ const initialState = {
     descending: 'default',
     filter: ''
   },
-  planList: []
+  userList: <IUserFullResponse[]>[]
 };
 
 const slice = createSlice({
@@ -213,11 +158,11 @@ const slice = createSlice({
       .addCase(userLoginThunk.rejected, (state, action) => {
         return initialState;
       })
-      .addCase(planListThunk.pending, (state, action) => {})
-      .addCase(planListThunk.fulfilled, (state, { payload: { data } }) => {
-        state.planList = data;
+      .addCase(userListThunk.pending, (state, action) => {})
+      .addCase(userListThunk.fulfilled, (state, { payload: { data } }) => {
+        state.userList = data.data;
       })
-      .addCase(planListThunk.rejected, (state, action) => {
+      .addCase(userListThunk.rejected, (state, action) => {
         return initialState;
       })
       .addCase(logoutUser.fulfilled, (state) => {
@@ -228,9 +173,10 @@ const slice = createSlice({
 
 export default slice.reducer;
 // normally you'd just export these individually so you don't have to import all userActions. can be helpful.
-export const userActions = { ...slice.actions, userLoginThunk, planListThunk };
+export const userActions = { ...slice.actions, userLoginThunk, userListThunk };
 
 export const selectUser = (state: RootState) => state.user;
+export const selectAllUsers = (state: RootState) => state.user.userList;
 
 // export const { logout } = slice.actions; // this is the common pattern as mentioned above.
 export interface User {
@@ -238,56 +184,18 @@ export interface User {
   username: string;
   email: string;
 }
-export interface IUserLightResponse {
-  id: string;
-  title: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  qb_customer_id: string;
-}
-export interface IUserFullResponse extends IUserLightResponse {
-  company_id: string;
-  title: string;
-  first_name: string;
-  last_name: string;
-  job_title: string;
-  user_type: string;
-  user_type_text: string;
-  email: string;
-  subscriber_role_id: string;
-  subscriber_role: {
-    id: string;
-    name: string;
-    guard_name: string;
-  };
-  profile_obj: {
-    main: string;
-    default: string;
-    mobile: string;
-    laptop: string;
-    tablet: string;
-    thumbnail: string;
-    original: string;
-  };
-  profile_name: string;
-  status: string;
-  status_text: string;
-  last_login_time: string;
-}
 
 export interface UserState extends IUserFullResponse {
   is_allow_purchase_datapack: string;
   subscription: {
     company_id: string;
     expiry_date: string;
-    user_id: string;
     id: string;
     name: string;
     payment_status: string | null;
     payment_status_text: string | null;
-    plan: any;
-    plan_id: string;
+    user: any;
+    user_id: string;
     self_ref_id: string | null;
     start_date: string;
     stripe_status: string | null;
@@ -304,7 +212,7 @@ export interface UserState extends IUserFullResponse {
   zoho_contact_id: string;
   cancel_request_flag: {
     is_auto_generated_invoice: boolean;
-    plan: string | any;
+    user: string | any;
     visibility: string;
     request_status: string;
     request_status_text: string;

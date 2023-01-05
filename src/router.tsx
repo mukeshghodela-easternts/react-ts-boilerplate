@@ -37,7 +37,9 @@ const UserProfile = Loader(
 const UserSettings = Loader(
   lazy(() => import('./content/applications/Users/settings'))
 );
-const PlanList = Loader(lazy(() => import('./content/applications/Plans')));
+const UserList = Loader(
+  lazy(() => import('./content/applications/ManageUsers'))
+);
 
 // Components
 
@@ -222,12 +224,12 @@ const routes = (): RouteObject[] => {
       ]
     },
     {
-      path: 'plan',
+      path: 'user',
       element: token ? <SidebarLayout /> : <Navigate to="/login" />,
       children: [
         {
           path: 'list',
-          element: <PlanList />
+          element: <UserList />
         }
       ]
     }
