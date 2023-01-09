@@ -225,8 +225,7 @@ const routes = (): RouteObject[] => {
     },
     {
       path: 'user',
-      // element: token ? <SidebarLayout /> : <Navigate to="/login" />,
-      element: <SidebarLayout />,
+      element: token ? <SidebarLayout /> : <Navigate to="/login" />,
       children: [
         {
           path: 'list',
