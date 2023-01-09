@@ -55,7 +55,7 @@ export const userListThunk = createAsyncThunk(
   ) => {
     try {
       const data = await axios.get<AnyObject>(
-        `${process.env.REACT_APP_API_URL}/users?page=${
+        `https://api.punkapi.com/v2/beers?page=${
           param.pagination.page ? param.pagination.page : 1
         }&per_page=${
           param.pagination.limit ? param.pagination.limit : ''
@@ -160,7 +160,8 @@ const slice = createSlice({
       })
       .addCase(userListThunk.pending, (state, action) => {})
       .addCase(userListThunk.fulfilled, (state, { payload: { data } }) => {
-        state.userList = data.data;
+        // state.userList = data.data;
+        state.userList = data as any[];
       })
       .addCase(userListThunk.rejected, (state, action) => {
         return initialState;
