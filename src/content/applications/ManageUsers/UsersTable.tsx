@@ -1,6 +1,5 @@
-import { FC, ChangeEvent, useState, useEffect, useMemo } from 'react';
+import { FC, ChangeEvent, useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import numeral from 'numeral';
 import PropTypes from 'prop-types';
 import {
   Tooltip,
@@ -33,14 +32,8 @@ import BulkActions from './BulkActions';
 import { useAppDispatch } from '../../../app/store';
 import { selectAllUsers, userActions } from '../../../features/user/usersSlice';
 import { useSnackbar } from '../../../contexts/SnackbarContext';
-import { useErrors } from '../../../utils/hooks';
+import { useDateTimes, useErrors } from '../../../utils/hooks';
 import { AxiosResponse } from 'axios';
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
-import type {
-  ColumnFiltersState,
-  PaginationState,
-  SortingState
-} from '@tanstack/react-table';
 import { IPagination } from '../../../common';
 import { useAppSelector } from '../../../app/hooks';
 
@@ -52,27 +45,6 @@ interface UsersTableProps {
 interface Filters {
   status?: CryptoOrderStatus;
 }
-
-const getStatusLabel = (cryptoOrderStatus: CryptoOrderStatus): JSX.Element => {
-  const map = {
-    failed: {
-      text: 'Failed',
-      color: 'error'
-    },
-    completed: {
-      text: 'Completed',
-      color: 'success'
-    },
-    pending: {
-      text: 'Pending',
-      color: 'warning'
-    }
-  };
-
-  const { text, color }: any = map['failed'];
-
-  return <Label color={color}>{text}</Label>;
-};
 
 const applyFilters = (
   cryptoOrders: CryptoOrder[],
@@ -89,28 +61,26 @@ const applyFilters = (
   });
 };
 
-const applyPagination = (
-  cryptoOrders: CryptoOrder[],
-  page: number,
-  limit: number
-): CryptoOrder[] => {
-  return cryptoOrders.slice(page * limit, page * limit + limit);
-};
-
-const UsersTable: FC<UsersTableProps> = ({ cryptoOrders }) => {
-  const [selectedCryptoOrders, setSelectedCryptoOrders] = useState<string[]>(
-    []
-  );
+const UsersTable: FC<UsersTableProps> = () => {
+  const [selectedIds, setSelectedCryptoOrders] = useState<string[]>([]);
   const { setSnackbar } = useSnackbar();
   const dispatch = useAppDispatch();
   const { getServerErrors } = useErrors();
+  const { getDateFormat } = useDateTimes();
   const userList = useAppSelector(selectAllUsers);
+
+  const [page, setPage] = useState<number>(0);
+  const [limit, setLimit] = useState<number>(5);
+  const [filters, setFilters] = useState<Filters>({
+    status: undefined
+  });
+
   //data and fetching state
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isRefetching, setIsRefetching] = useState(false);
   const [globalFilter, setGlobalFilter] = useState('');
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<any[]>([]);
   const [userCount, setUserCount] = useState(0);
   const [pagination, setPagination] = useState<IPagination>({
     query: '',
@@ -153,12 +123,7 @@ const UsersTable: FC<UsersTableProps> = ({ cryptoOrders }) => {
       });
   }, [pagination]);
 
-  const selectedBulkActions = selectedCryptoOrders.length > 0;
-  const [page, setPage] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(5);
-  const [filters, setFilters] = useState<Filters>({
-    status: undefined
-  });
+  const selectedBulkActions = selectedIds.length > 0;
 
   const statusOptions = [
     {
@@ -192,13 +157,9 @@ const UsersTable: FC<UsersTableProps> = ({ cryptoOrders }) => {
     }));
   };
 
-  const handleSelectAllCryptoOrders = (
-    event: ChangeEvent<HTMLInputElement>
-  ): void => {
+  const handleSelectAll = (event: ChangeEvent<HTMLInputElement>): void => {
     setSelectedCryptoOrders(
-      event.target.checked
-        ? cryptoOrders.map((cryptoOrder) => cryptoOrder.id)
-        : []
+      event.target.checked ? userList.map((userId) => userId.id) : []
     );
   };
 
@@ -206,7 +167,7 @@ const UsersTable: FC<UsersTableProps> = ({ cryptoOrders }) => {
     event: ChangeEvent<HTMLInputElement>,
     cryptoOrderId: string
   ): void => {
-    if (!selectedCryptoOrders.includes(cryptoOrderId)) {
+    if (!selectedIds.includes(cryptoOrderId)) {
       setSelectedCryptoOrders((prevSelected) => [
         ...prevSelected,
         cryptoOrderId
@@ -233,17 +194,9 @@ const UsersTable: FC<UsersTableProps> = ({ cryptoOrders }) => {
     });
   };
 
-  const filteredCryptoOrders = applyFilters(cryptoOrders, filters);
-  const paginatedCryptoOrders = applyPagination(
-    filteredCryptoOrders,
-    page,
-    limit
-  );
-  const selectedSomeCryptoOrders =
-    selectedCryptoOrders.length > 0 &&
-    selectedCryptoOrders.length < cryptoOrders.length;
-  const selectedAllCryptoOrders =
-    selectedCryptoOrders.length === cryptoOrders.length;
+  const selectedSome =
+    selectedIds.length > 0 && selectedIds.length < userList.length;
+  const selectedAllIds = selectedIds.length === userList.length;
   const theme = useTheme();
 
   return (
@@ -285,22 +238,21 @@ const UsersTable: FC<UsersTableProps> = ({ cryptoOrders }) => {
               <TableCell padding="checkbox">
                 <Checkbox
                   color="primary"
-                  checked={selectedAllCryptoOrders}
-                  indeterminate={selectedSomeCryptoOrders}
-                  onChange={handleSelectAllCryptoOrders}
+                  checked={selectedAllIds}
+                  indeterminate={selectedSome}
+                  onChange={handleSelectAll}
                 />
               </TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
+              <TableCell>Dob</TableCell>
               <TableCell align="right">Status</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {userList.map((user) => {
-              const isCryptoOrderSelected = selectedCryptoOrders.includes(
-                user.id
-              );
+              const isCryptoOrderSelected = selectedIds.includes(user.id);
               return (
                 <TableRow hover key={user.id} selected={isCryptoOrderSelected}>
                   <TableCell padding="checkbox">
@@ -323,9 +275,6 @@ const UsersTable: FC<UsersTableProps> = ({ cryptoOrders }) => {
                     >
                       {user.name}
                     </Typography>
-                    {/* <Typography variant="body2" color="text.secondary" noWrap>
-                      {format(user.orderDate, 'MMMM dd yyyy')}
-                    </Typography> */}
                   </TableCell>
                   <TableCell>
                     <Typography
@@ -336,6 +285,11 @@ const UsersTable: FC<UsersTableProps> = ({ cryptoOrders }) => {
                       noWrap
                     >
                       {user.email}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="body2" color="text.secondary" noWrap>
+                      {user.dob ? getDateFormat(user.dob) : '-'}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">{user.status_text}</TableCell>
