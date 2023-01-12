@@ -67,7 +67,7 @@ export const userListThunk = createAsyncThunk(
           param.pagination.isLight ? param.pagination.isLight : ''
         }&sort=${
           param.pagination.orderBy ? param.pagination.orderBy : ''
-        }&order_by=${getSortType(param.pagination.descending)}`,
+        }&order_by=${param.pagination.orderType}`,
         {
           params: param.additionalParams ? param.additionalParams : {}
         }

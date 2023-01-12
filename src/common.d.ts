@@ -3,7 +3,7 @@ export interface IPagination {
   page?: number;
   limit?: number;
   orderBy?: string;
-  descending?: string | boolean;
+  orderType?: string | boolean;
   filter?: string;
   isLight?: boolean;
 }
