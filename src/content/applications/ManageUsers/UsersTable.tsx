@@ -21,14 +21,14 @@ import {
   MenuItem,
   Typography,
   useTheme,
-  CardHeader
+  CardHeader,
+  Toolbar
 } from '@mui/material';
 
-import Label from '../../../components/Label';
 import { CryptoOrder, CryptoOrderStatus } from '../../../models/crypto_order';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
-import BulkActions from './BulkActions';
+import DeleteAllBtn from './DeleteAllBtn';
 import { useAppDispatch } from '../../../app/store';
 import { selectAllUsers, userActions } from '../../../features/user/usersSlice';
 import { useSnackbar } from '../../../contexts/SnackbarContext';
@@ -201,35 +201,39 @@ const UsersTable: FC<UsersTableProps> = () => {
 
   return (
     <Card>
-      {selectedBulkActions && (
-        <Box flex={1} p={2}>
-          <BulkActions />
-        </Box>
-      )}
-      {!selectedBulkActions && (
-        <CardHeader
-          action={
-            <Box width={150}>
-              <FormControl fullWidth variant="outlined">
-                <InputLabel>Status</InputLabel>
-                <Select
-                  value={filters.status || 'all'}
-                  onChange={handleStatusChange}
-                  label="Status"
-                  autoWidth
-                >
-                  {statusOptions.map((statusOption) => (
-                    <MenuItem key={statusOption.id} value={statusOption.id}>
-                      {statusOption.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
-          }
-          title="Listing"
-        />
-      )}
+      <Toolbar
+        sx={{
+          pl: { sm: 2 },
+          pr: { xs: 1, sm: 1 }
+        }}
+      >
+        {selectedIds.length > 0 ? (
+          <Typography
+            sx={{ flex: '1 1 100%', pl: 1 }}
+            color="inherit"
+            variant="subtitle1"
+            component="div"
+          >
+            {selectedIds.length} selected
+          </Typography>
+        ) : (
+          <Typography
+            sx={{ flex: '1 1 100%', pl: 1 }}
+            color="inherit"
+            variant="subtitle1"
+            component="div"
+          >
+            {selectedIds.length} selected
+          </Typography>
+        )}
+        {selectedIds.length > 0 && (
+          <Tooltip title="Multiple Delete">
+            <IconButton>
+              <DeleteAllBtn />
+            </IconButton>
+          </Tooltip>
+        )}
+      </Toolbar>
       <Divider />
       <TableContainer>
         <Table>
