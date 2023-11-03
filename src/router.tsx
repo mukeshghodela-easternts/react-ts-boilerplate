@@ -77,6 +77,8 @@ const StatusMaintenance = Loader(
 );
 const Login = Loader(lazy(() => import('./content/pages/Components/Login')));
 
+const KmartLeftbar = Loader(lazy(() => import('./content/pages/KmartLeftbar')));
+
 const routes = (): RouteObject[] => {
   const user = useTypedSelector(selectUser);
   const token = user.token;
@@ -92,6 +94,10 @@ const routes = (): RouteObject[] => {
         {
           path: 'overview',
           element: <Navigate to="/" replace />
+        },
+        {
+          path: 'kmart-leftbar',
+          element: <KmartLeftbar to="/" />
         },
         {
           path: 'login',
